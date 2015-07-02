@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">RTSP Tests</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="action_delete">Delete</string>
+
+    <string name="key_saved_camera_url">cameraURL</string>
+    <string name="title_saved_camera_url">camera url</string>
+
+    <string name="key_saved_get_parameter_parameter">getParameterValue</string>
+    <string name="title_saved_get_parameter_parameter">GET_PARAMETER (name of parameter)</string>
+
+    <string name="key_saved_set_parameter_parameter">setParameterValue</string>
+    <string name="title_saved_set_parameter_parameter">SET_PARAMETER (name and value of parameter)</string>
+
+    <string name="title_settings">Settings</string>
+
+    <string name="announce_command_description">
+        v=0\no=- 15182544 1 IN IP4 192.168.10.173\ns=RTSP/RTP stream from IPNC\ni=PSIA/Streaming/channels/2?videoCodecType=H.264\nt=0 0\na=tool:LIVE555 Streaming Media v2012.10.24\na=type:broadcast\na=control:*\na=range:npt=0-\na=x-qt-text-nam:RTSP/RTP stream from IPNC\na=x-qt-text-inf:PSIA/Streaming/channels/2?videoCodecType=H.264\nm=video 0 RTP/AVP 96\nc=IN IP4 0.0.0.0\nb=AS:12000\na=rtpmap:96 H264/90000\na=fmtp:96 packetization-mode=1;profile-level-id=640029;sprop-parameter-sets=Z2QAKa2EBUViuKxUdCAqKxXFYqOhAVFYrisVHQgKisVxWKjoQFRWK4rFR0ICorFcVio6ECSFITk8nyfk/k/J8nm5s00IEkKQnJ5Pk/J/J+T5PNzZprQDwBE/LKkAAAMAeAAAHCBgQAB6EgAAiVRve+F4RCNQ,aO48sA==\na=control:track1
+    </string>
+</resources>
