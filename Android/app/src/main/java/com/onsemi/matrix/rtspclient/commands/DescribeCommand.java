@@ -20,7 +20,6 @@ package com.onsemi.matrix.rtspclient.commands;
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
 import com.onsemi.matrix.rtspclient.ResultLogger;
-import com.onsemi.matrix.rtspclient.Test;
 
 import java.net.URI;
 
@@ -65,11 +64,8 @@ public class DescribeCommand extends RTSPCommand {
             this.messageLogger.info(String.format("%s\n", this.descriptor));
         }
 
-        if (response.getStatusCode() == 200) {
-            this.resultLogger.info(new Test(request.getMethod().toString(), true));
-        } else {
-            this.resultLogger.info(new Test(request.getMethod().toString(), false,
-                    String.format("Expected: '%d' Actual: '%d'", 200, response.getStatusCode())));
-        }
+        this.resultLogger.info(this.verify(request, response));
+
+        this.notifyRequestFinishedObserver();
     }
 }

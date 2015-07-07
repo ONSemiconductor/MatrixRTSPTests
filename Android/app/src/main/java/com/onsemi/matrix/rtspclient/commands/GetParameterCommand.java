@@ -19,8 +19,11 @@ package com.onsemi.matrix.rtspclient.commands;
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
 import com.onsemi.matrix.rtspclient.ResultLogger;
+import com.onsemi.matrix.rtspclient.Info;
 
 import br.com.voicetechnology.rtspclient.RTSPClient;
+import br.com.voicetechnology.rtspclient.concepts.Request;
+import br.com.voicetechnology.rtspclient.concepts.Response;
 
 public class GetParameterCommand extends RTSPCommand {
     private String parameter = null;
@@ -36,6 +39,24 @@ public class GetParameterCommand extends RTSPCommand {
         super.execute();
 
         this.client.getParameter(this.parameter);
+    }
 
+    @Override
+    public Info verify(Request request, Response response) {
+        Info info = super.verify(request, response);
+
+        if (!info.isPassed()) {
+            return info;
+        }
+
+        String methodName = request.getMethod().toString();
+
+        if (response.getEntityMessage() == null) {
+            return new Info(methodName, false,
+                    String.format("%s command doesn't return requested parameter", methodName));
+
+        }
+
+        return new Info(methodName, true);
     }
 }

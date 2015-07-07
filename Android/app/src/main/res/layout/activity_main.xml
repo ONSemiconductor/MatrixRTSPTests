@@ -105,7 +105,6 @@
             android:id="@+id/runAllBtn"
             android:layout_width="85dp"
             android:layout_height="wrap_content"
-            android:onClick="onClick"
             android:textColor="#ffff00"
             android:text="run all"
             android:layout_row="3"

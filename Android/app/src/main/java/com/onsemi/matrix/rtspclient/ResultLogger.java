@@ -24,28 +24,30 @@ import java.util.ArrayList;
 public class ResultLogger {
     private TextView textView;
 
-    private ArrayList<Test> result = new ArrayList<>();
+    private ArrayList<Info> result = new ArrayList<>();
 
     public ResultLogger(TextView textView) {
         this.textView = textView;
     }
 
-    public void info(Test test) {
-        result.add(test);
+    public void info(Info info) {
+        result.add(info);
 
         this.textView.post(new Runnable() {
             @Override
             public void run() {
                 String message = new String();
 
-                for(Test test : ResultLogger.this.result) {
-                    String result = test.isPassed() ? "passed" : "failed";
-                    String resultColor = test.isPassed() ? "#00ff00" : "#ff0000";
+                for(int i = 0; i < ResultLogger.this.result.size(); i++) {
+                    String result = ResultLogger.this.result.get(i).isPassed() ? "passed" : "failed";
+                    String resultColor = ResultLogger.this.result.get(i).isPassed() ? "#00ff00" : "#ff0000";
 
-                    message += String.format("Command: <font color='#999999'>%s</font> Result: <font color='%s'>%s</font><br/>", test.getName(), resultColor, result);
+                    message += String.format("Command: <font color='#999999'>%s</font> Result: <font color='%s'>%s</font><br/>",
+                            ResultLogger.this.result.get(i).getMethodName(), resultColor, result);
 
-                    if(test.getError() != null) {
-                        message += String.format("> Error: <font color='#777777'>%s</font><br/>", test.getError());
+                    if(ResultLogger.this.result.get(i).getError() != null) {
+                        message += String.format("> Error: <font color='#777777'>%s</font><br/>",
+                                ResultLogger.this.result.get(i).getError());
                     }
                 }
 

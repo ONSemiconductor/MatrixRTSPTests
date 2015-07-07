@@ -16,25 +16,29 @@
 
 package com.onsemi.matrix.rtspclient;
 
-public class Test {
-    private String name = null;
+public class Info {
+    private String methodName = null;
     private  String error = null;
 
     private boolean isPassed = false;
 
-    public Test(String name, boolean isPassed) {
-        this.name = name;
+    public Info(String methodName, boolean isPassed) {
+        this.methodName = methodName;
         this.isPassed = isPassed;
     }
 
-    public Test(String name, boolean isPassed, String error) {
+    public Info(String name, boolean isPassed, String error) {
         this(name, isPassed);
 
         this.error = error;
     }
 
-    public String getName() {
-        return this.name;
+    public String getMethodName() {
+        return this.methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
     }
 
     public boolean isPassed() {

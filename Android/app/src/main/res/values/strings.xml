@@ -5,7 +5,7 @@
     <string name="action_delete">Delete</string>
 
     <string name="key_saved_camera_url">cameraURL</string>
-    <string name="title_saved_camera_url">camera url</string>
+    <string name="title_saved_camera_url">The camera url</string>
 
     <string name="key_saved_get_parameter_parameter">getParameterValue</string>
     <string name="title_saved_get_parameter_parameter">GET_PARAMETER (name of parameter)</string>

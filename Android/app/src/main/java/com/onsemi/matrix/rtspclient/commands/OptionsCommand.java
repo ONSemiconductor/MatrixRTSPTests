@@ -16,13 +16,18 @@
 
 package com.onsemi.matrix.rtspclient.commands;
 
+import com.onsemi.matrix.rtspclient.Info;
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
 import com.onsemi.matrix.rtspclient.ResultLogger;
 
 import java.net.URI;
 
+import br.com.voicetechnology.rtspclient.MissingHeaderException;
 import br.com.voicetechnology.rtspclient.RTSPClient;
+import br.com.voicetechnology.rtspclient.concepts.Header;
+import br.com.voicetechnology.rtspclient.concepts.Request;
+import br.com.voicetechnology.rtspclient.concepts.Response;
 
 public class OptionsCommand extends RTSPCommand {
     private String uri = null;
@@ -42,5 +47,33 @@ public class OptionsCommand extends RTSPCommand {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public Info verify(Request request, Response response) {
+        Info info = super.verify(request, response);
+
+        if (!info.isPassed()) {
+            return info;
+        }
+
+        String methodName = request.getMethod().toString();
+
+        try {
+            Header publicHeader = response.getHeader("Public");
+            String publicHeaderValue = publicHeader.getRawValue();
+
+            for (Request.Method method : Request.Method.values()) {
+                if(!publicHeaderValue.contains(method.toString())) {
+                    return new Info(methodName, false, String.format(
+                            "'Public' header doesn't contain %s command", method));
+                }
+            }
+        } catch (MissingHeaderException e) {
+            return new Info(methodName, false, "Response doesn't contain 'Public' header");
+        }
+
+
+        return new Info(methodName, true);
     }
 }

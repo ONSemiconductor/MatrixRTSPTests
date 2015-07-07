@@ -195,7 +195,7 @@ public class RTSPClient implements Client, TransportListener
 			String portParam = "client_port=" + localPort + "-" + (1 + localPort);
 
 			send(getSetup(uri.toString(), localPort, new TransportHeader(
-					LowerTransport.DEFAULT, "unicast", portParam), session));
+					LowerTransport.DEFAULT, "unicast", portParam), null));
 		}
         catch(Exception e)
 		{
@@ -219,7 +219,7 @@ public class RTSPClient implements Client, TransportListener
 				finalURI += '/' + resource;
 
 			send(getSetup(finalURI, localPort, new TransportHeader(
-					LowerTransport.DEFAULT, "unicast", portParam), session));
+					LowerTransport.DEFAULT, "unicast", portParam), null));
 		}
         catch(Exception e)
 		{

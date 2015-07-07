@@ -23,6 +23,7 @@ import android.util.SparseArray;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -38,6 +39,8 @@ import com.onsemi.matrix.rtspclient.commands.RunAllCommand;
 import com.onsemi.matrix.rtspclient.commands.SetParameterCommand;
 import com.onsemi.matrix.rtspclient.commands.SetupCommand;
 import com.onsemi.matrix.rtspclient.commands.TeardownCommand;
+
+import java.util.Arrays;
 
 import br.com.voicetechnology.rtspclient.RTSPClient;
 import br.com.voicetechnology.rtspclient.transport.PlainTCP;
@@ -64,6 +67,25 @@ public class MainActivity extends AppCompatActivity {
 
             this.commands = this.createCommands();
 
+            Button runAllBtn = (Button)this.findViewById(R.id.runAllBtn);
+
+            runAllBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            new RunAllCommand(Arrays.asList(new RTSPCommand[] {
+                                    commands.get(R.id.optionsBtn), commands.get(R.id.describeBtn), commands.get(R.id.setupBtn),
+                                    commands.get(R.id.playBtn), commands.get(R.id.pauseBtn), commands.get(R.id.recordBtn),
+                                    commands.get(R.id.getParameterBtn), commands.get(R.id.setParameterBtn),
+                                    commands.get(R.id.announceBtn), commands.get(R.id.teardownBtn)
+                            })).execute();
+                        }
+                    }).start();
+                }
+            });
+
             TabHost tabHost = (TabHost)findViewById(android.R.id.tabhost);
 
             tabHost.setup();
@@ -71,17 +93,13 @@ public class MainActivity extends AppCompatActivity {
             TabHost.TabSpec tabSpec;
 
             tabSpec = tabHost.newTabSpec("tag1");
-
             tabSpec.setIndicator("Result");
             tabSpec.setContent(R.id.resultLogsScrollView);
-
             tabHost.addTab(tabSpec);
 
             tabSpec = tabHost.newTabSpec("tag2");
-
             tabSpec.setIndicator("Output");
             tabSpec.setContent(R.id.messageLogsScrollView);
-
             tabHost.addTab(tabSpec);
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,10 +178,6 @@ public class MainActivity extends AppCompatActivity {
 
         cs.put(R.id.setParameterBtn, new SetParameterCommand(client, this.messageLogger, this.resultLogger,
                 this.settings.getSetParameterValue()));
-
-        cs.put(R.id.runAllBtn, new RunAllCommand(client, this.messageLogger, this.resultLogger,
-                this.settings.getCameraURL(), 0, this.settings.getGetParameterValue(),
-                this.settings.getSetParameterValue(), this.getString(R.string.announce_command_description)));
 
         return cs;
     }

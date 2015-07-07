@@ -16,90 +16,72 @@
 
 package com.onsemi.matrix.rtspclient.commands;
 
-import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
-import com.onsemi.matrix.rtspclient.ResultLogger;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-import br.com.voicetechnology.rtspclient.RTSPClient;
-import br.com.voicetechnology.rtspclient.concepts.Client;
-import br.com.voicetechnology.rtspclient.concepts.Request;
-import br.com.voicetechnology.rtspclient.concepts.Response;
 
-public class RunAllCommand extends RTSPCommand {
-    private String uri;
-    private int port;
+public class RunAllCommand implements Observer {
+    private List<RTSPCommand> commands = null;
 
-    private String getParameterValue;
-    private String setParameterValue;
-
-    private String announceDescription;
-
-    public RunAllCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger,
-                         String uri, int port,
-                         String getParameterValue, String setParameterValue,
-                         String announceDescription) {
-        super(client, mLogger, rLogger);
-
-        this.uri = uri;
-        this.port = port;
-
-        this.getParameterValue = getParameterValue;
-        this.setParameterValue = setParameterValue;
-
-        this.announceDescription = announceDescription;
+    public RunAllCommand(List<RTSPCommand> commands) {
+        this.commands = commands;
     }
 
-    @Override
+    private RTSPCommand findCommandByType(Class type) {
+        for(RTSPCommand command : this.commands) {
+            if(command.getClass() == type) {
+                return command;
+            }
+        }
+
+        return null;
+    }
+
     public void execute() {
-        super.execute();
-
         try {
-            this.client.options("*", new URI(uri));
+            RTSPCommand command = this.findCommandByType(OptionsCommand.class);
+            command.setRequestFinishedObserver(this);
 
+            command.execute();
         } catch(Exception e) {
             e.printStackTrace();
         }
     }
 
     @Override
-    public void response(Client client, Request request, Response response) {
-        this.print(request, response);
+    public void update(Observable observable, Object data) {
+        RTSPCommand command = null;
 
-        try {
-            switch (request.getMethod()) {
-                case OPTIONS:
-                    this.client.describe(new URI(uri));
-                    break;
-                case DESCRIBE:
-                    this.client.setup(new URI(uri), port);
-                    break;
-                case SETUP:
-                    this.client.play();
-                    break;
-                case PLAY:
-                    this.client.pause();
-                    break;
-                case PAUSE:
-                    this.client.record();
-                    break;
-                case RECORD:
-                    this.client.getParameter(getParameterValue);
-                    break;
-                case GET_PARAMETER:
-                    this.client.setParameter(setParameterValue);
-                    break;
-                case SET_PARAMETER:
-                    this.client.announce(announceDescription);
-                    break;
-                case ANNOUNCE:
-                    this.client.teardown();
-                    break;
-            }
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
+        ((RTSPCommand)observable).setRequestFinishedObserver(null);
+
+        if (observable.getClass() == OptionsCommand.class) {
+            command = RunAllCommand.this.findCommandByType(DescribeCommand.class);
+        } else if (observable.getClass() == DescribeCommand.class) {
+            command = RunAllCommand.this.findCommandByType(SetupCommand.class);
+        } else if (observable.getClass() == SetupCommand.class) {
+            command = RunAllCommand.this.findCommandByType(PlayCommand.class);
+        } else if (observable.getClass() == PlayCommand.class) {
+            command = RunAllCommand.this.findCommandByType(PauseCommand.class);
+        } else if (observable.getClass() == PauseCommand.class) {
+            command = RunAllCommand.this.findCommandByType(RecordCommand.class);
+        } else if (observable.getClass() == RecordCommand.class) {
+            command = RunAllCommand.this.findCommandByType(AnnounceCommand.class);
+        } else if (observable.getClass() == AnnounceCommand.class) {
+            command = RunAllCommand.this.findCommandByType(GetParameterCommand.class);
+        } else if (observable.getClass() == GetParameterCommand.class) {
+            command = RunAllCommand.this.findCommandByType(SetParameterCommand.class);
+        } else if (observable.getClass() == SetParameterCommand.class) {
+            command = RunAllCommand.this.findCommandByType(TeardownCommand.class);
+        } else if (observable.getClass() == TeardownCommand.class) {
+            command = RunAllCommand.this.findCommandByType(TeardownCommand.class);
+        }
+
+        if (command != null) {
+            command.setRequestFinishedObserver(this);
+            command.execute();
         }
     }
 }

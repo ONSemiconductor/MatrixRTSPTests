@@ -16,6 +16,9 @@
 
 package com.onsemi.matrix.rtspclient;
 
+import java.util.Observable;
+import java.util.Observer;
+
 import br.com.voicetechnology.rtspclient.RTSPClient;
 import br.com.voicetechnology.rtspclient.concepts.Client;
 import br.com.voicetechnology.rtspclient.concepts.ClientListener;
@@ -24,17 +27,19 @@ import br.com.voicetechnology.rtspclient.concepts.EntityMessage;
 import br.com.voicetechnology.rtspclient.concepts.Request;
 import br.com.voicetechnology.rtspclient.concepts.Response;
 
-public class RTSPCommand implements ClientListener  {
+public class RTSPCommand extends Observable implements ClientListener {
     protected RTSPClient client = null;
 
     protected MessageLogger messageLogger = null;
     protected ResultLogger resultLogger = null;
 
-    public RTSPCommand(RTSPClient client, MessageLogger messageLogger, ResultLogger resultLogger) {
+    protected Observer requestFinishedObserver = null;
+
+    public RTSPCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger) {
         this.client = client;
 
-        this.messageLogger = messageLogger;
-        this.resultLogger = resultLogger;
+        this.messageLogger = mLogger;
+        this.resultLogger = rLogger;
     }
 
     public void execute() {
@@ -43,6 +48,16 @@ public class RTSPCommand implements ClientListener  {
 
     public RTSPClient getClient() {
         return this.client;
+    }
+
+    public void setRequestFinishedObserver(Observer requestFinishedObserver) {
+        this.requestFinishedObserver = requestFinishedObserver;
+    }
+
+    protected void notifyRequestFinishedObserver() {
+        if (this.requestFinishedObserver != null) {
+            requestFinishedObserver.update(this, null);
+        }
     }
 
     @Override
@@ -61,6 +76,20 @@ public class RTSPCommand implements ClientListener  {
     @Override
     public void response(Client client, Request request, Response response) {
         this.print(request, response);
+
+        this.resultLogger.info(this.verify(request, response));
+
+        this.notifyRequestFinishedObserver();
+    }
+
+    public Info verify(Request request, Response response) {
+        if (response.getStatusCode() == 200) {
+            return new Info(request.getMethod().toString(), true);
+        }
+
+        return new Info(request.getMethod().toString(), false,
+                String.format("Expected status: '%d OK' Actual status: '%d %s'",
+                        200, response.getStatusCode(), response.getStatusText()));
     }
 
     protected void print(Request request, Response response) {
@@ -71,13 +100,6 @@ public class RTSPCommand implements ClientListener  {
         this.messageLogger.info(String.format("Response:\n%s", response));
 
         print(response.getEntityMessage());
-
-        if (response.getStatusCode() == 200) {
-            this.resultLogger.info(new Test(request.getMethod().toString(), true));
-        } else {
-            this.resultLogger.info(new Test(request.getMethod().toString(), false,
-                    String.format("Expected: '%d' Actual: '%d'", 200, response.getStatusCode())));
-        }
     }
 
     private void print(EntityMessage entityMessage) {
