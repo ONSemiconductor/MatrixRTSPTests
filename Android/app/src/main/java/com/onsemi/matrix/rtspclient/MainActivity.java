@@ -1,17 +1,21 @@
 /*
-** Copyright 2015 ON Semiconductor
+** Copyright 2015 ON Semiconductor Inc.
 **
-** Licensed under the Apache License, Version 2.0 (the "License");
-** you may not use this file except in compliance with the License.
-** You may obtain a copy of the License at
 **
-**  http://www.apache.org/licenses/LICENSE-2.0
+** This file is part of MatrixRTSPTests.
 **
-** Unless required by applicable law or agreed to in writing, software
-** distributed under the License is distributed on an "AS IS" BASIS,
-** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-** See the License for the specific language governing permissions and
-** limitations under the License.
+** MatrixRTSPTests is free software: you can redistribute it and/or modify
+** it under the terms of the GNU General Public License as published by
+** the Free Software Foundation, either version 3 of the License, or
+** (at your option) any later version.
+**
+** MatrixRTSPTests is distributed in the hope that it will be useful,
+** but WITHOUT ANY WARRANTY; without even the implied warranty of
+** MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+** GNU General Public License for more details.
+**
+** You should have received a copy of the GNU General Public License
+** along with MatrixRTSPTests.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 package com.onsemi.matrix.rtspclient;
@@ -62,50 +66,49 @@ public class MainActivity extends AppCompatActivity {
         try {
             this.settings = new Settings(this);
 
-            this.messageLogger = new MessageLogger((TextView)findViewById(R.id.messageLogsTextView));
-            this.resultLogger = new ResultLogger((TextView)findViewById(R.id.resultLogsTextView));
+            if (this.messageLogger == null) {
+                this.messageLogger = new MessageLogger((TextView)findViewById(R.id.messageLogsTextView));
+            } else {
+                this.messageLogger.setTextView((TextView)findViewById(R.id.messageLogsTextView));
+            }
 
-            this.commands = this.createCommands();
+            if (this.resultLogger == null) {
+                this.resultLogger = new ResultLogger((TextView)findViewById(R.id.resultLogsTextView));
+            } else {
+                this.resultLogger.setTextView((TextView)findViewById(R.id.resultLogsTextView));
+            }
 
-            Button runAllBtn = (Button)this.findViewById(R.id.runAllBtn);
-
-            runAllBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    new Thread(new Runnable() {
-                        @Override
-                        public void run() {
-                            new RunAllCommand(Arrays.asList(new RTSPCommand[] {
-                                    commands.get(R.id.optionsBtn), commands.get(R.id.describeBtn), commands.get(R.id.setupBtn),
-                                    commands.get(R.id.playBtn), commands.get(R.id.pauseBtn), commands.get(R.id.recordBtn),
-                                    commands.get(R.id.getParameterBtn), commands.get(R.id.setParameterBtn),
-                                    commands.get(R.id.announceBtn), commands.get(R.id.teardownBtn)
-                            })).execute();
-                        }
-                    }).start();
-                }
-            });
-
-            TabHost tabHost = (TabHost)findViewById(android.R.id.tabhost);
-
-            tabHost.setup();
-
-            TabHost.TabSpec tabSpec;
-
-            tabSpec = tabHost.newTabSpec("tag1");
-            tabSpec.setIndicator("Result");
-            tabSpec.setContent(R.id.resultLogsScrollView);
-            tabHost.addTab(tabSpec);
-
-            tabSpec = tabHost.newTabSpec("tag2");
-            tabSpec.setIndicator("Output");
-            tabSpec.setContent(R.id.messageLogsScrollView);
-            tabHost.addTab(tabSpec);
+           this.createTabHost();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+        this.commands = this.createCommands();
+
+        Button runAllBtn = (Button)this.findViewById(R.id.runAllBtn);
+
+        runAllBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new RunAllCommand(Arrays.asList(new RTSPCommand[] {
+                                commands.get(R.id.optionsBtn), commands.get(R.id.describeBtn), commands.get(R.id.setupBtn),
+                                commands.get(R.id.playBtn), commands.get(R.id.pauseBtn), commands.get(R.id.recordBtn),
+                                commands.get(R.id.getParameterBtn), commands.get(R.id.setParameterBtn),
+                                commands.get(R.id.announceBtn), commands.get(R.id.teardownBtn)
+                        })).execute();
+                    }
+                }).start();
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -124,7 +127,6 @@ public class MainActivity extends AppCompatActivity {
         } else if(id == R.id.action_settings) {
             this.startActivity(new Intent(this, SettingsActivity.class));
             this.commands = this.createCommands();
-
             return true;
         }
 
@@ -156,7 +158,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private SparseArray<RTSPCommand> createCommands() {
-        SparseArray<RTSPCommand> cs = new SparseArray<>();
+        SparseArray<RTSPCommand> cs = new SparseArray<RTSPCommand>();
 
         RTSPClient client = new RTSPClient();
         client.setTransport(new PlainTCP());
@@ -180,5 +182,23 @@ public class MainActivity extends AppCompatActivity {
                 this.settings.getSetParameterValue()));
 
         return cs;
+    }
+
+    private void createTabHost() {
+        TabHost tabHost = (TabHost)findViewById(android.R.id.tabhost);
+
+        tabHost.setup();
+
+        TabHost.TabSpec tabSpec;
+
+        tabSpec = tabHost.newTabSpec("tag1");
+        tabSpec.setIndicator("Result");
+        tabSpec.setContent(R.id.resultLogsScrollView);
+        tabHost.addTab(tabSpec);
+
+        tabSpec = tabHost.newTabSpec("tag2");
+        tabSpec.setIndicator("Output");
+        tabSpec.setContent(R.id.messageLogsScrollView);
+        tabHost.addTab(tabSpec);
     }
 }
