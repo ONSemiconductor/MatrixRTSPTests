@@ -1,0 +1,15 @@
+<PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <EditTextPreference
+        android:key="@string/key_saved_camera_url"
+        android:title="@string/title_saved_camera_url" />
+
+    <EditTextPreference
+        android:key="@string/key_saved_get_parameter_parameter"
+        android:title="@string/title_saved_get_parameter_parameter" />
+
+    <EditTextPreference
+        android:key="@string/key_saved_set_parameter_parameter"
+        android:title="@string/title_saved_set_parameter_parameter" />
+</PreferenceScreen>

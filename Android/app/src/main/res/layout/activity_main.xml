@@ -1,0 +1,170 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp"
+    tools:context=".MainActivity">
+
+    <GridLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:columnCount="3">
+
+        <Button
+            android:id="@+id/optionsBtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="options"
+            android:layout_row="0"
+            android:layout_column="0"/>
+
+        <Button
+            android:id="@+id/setupBtn"
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="setup"
+            android:layout_row="0"
+            android:layout_column="1"/>
+
+        <Button
+            android:id="@+id/teardownBtn"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="teardown"
+            android:layout_row="0"
+            android:layout_column="2"/>
+
+        <Button
+            android:id="@+id/describeBtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="describe"
+            android:layout_row="1"
+            android:layout_column="0"/>
+
+        <Button
+            android:id="@+id/playBtn"
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="play"
+            android:layout_row="1"
+            android:layout_column="1"/>
+
+        <Button
+            android:id="@+id/getParameterBtn"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="get_param"
+            android:layout_row="1"
+            android:layout_column="2"/>
+
+        <Button
+            android:id="@+id/announceBtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="announce"
+            android:layout_row="2"
+            android:layout_column="0"/>
+
+        <Button
+            android:id="@+id/pauseBtn"
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="pause"
+            android:layout_row="2"
+            android:layout_column="1"/>
+
+        <Button
+            android:id="@+id/setParameterBtn"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="set_param"
+            android:layout_row="2"
+            android:layout_column="2"/>
+
+        <Button
+            android:id="@+id/recordBtn"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:onClick="onClick"
+            android:text="record"
+            android:layout_row="3"
+            android:layout_column="0"/>
+
+        <Button
+            android:id="@+id/runAllBtn"
+            android:layout_width="85dp"
+            android:layout_height="wrap_content"
+            android:textColor="#ffff00"
+            android:text="run all"
+            android:layout_row="3"
+            android:layout_column="1"/>
+    </GridLayout>
+
+    <TabHost
+        android:id="@android:id/tabhost"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <TabWidget
+                android:id="@android:id/tabs"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+            </TabWidget>
+            <FrameLayout
+                android:id="@android:id/tabcontent"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+
+                <ScrollView
+                    android:id="@+id/resultLogsScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rectangle"
+                    android:fillViewport="true"
+                    android:layout_x="0px"
+                    android:layout_y="25px"
+                    android:scrollbars="vertical">
+                    <TextView
+                        android:id="@+id/resultLogsTextView"
+                        android:layout_width="match_parent"
+                        android:paddingLeft="5dp"
+                        android:scrollbars = "vertical"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_height="match_parent"/>
+                </ScrollView>
+
+                <ScrollView
+                    android:id="@+id/messageLogsScrollView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/rectangle"
+                    android:fillViewport="true"
+                    android:layout_x="0px"
+                    android:layout_y="25px"
+                    android:scrollbars="vertical">
+                    <TextView
+                        android:id="@+id/messageLogsTextView"
+                        android:layout_width="match_parent"
+                        android:paddingLeft="5dp"
+                        android:scrollbars = "vertical"
+                        android:textAppearance="?android:attr/textAppearanceMedium"
+                        android:layout_height="match_parent"/>
+                </ScrollView>
+            </FrameLayout>
+        </LinearLayout>
+    </TabHost>
+</LinearLayout>
