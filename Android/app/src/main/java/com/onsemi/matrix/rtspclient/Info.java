@@ -22,7 +22,7 @@ package com.onsemi.matrix.rtspclient;
 
 public class Info {
     private String methodName = null;
-    private  String error = null;
+    private String error = null;
 
     private boolean isPassed = false;
 

@@ -24,15 +24,16 @@ import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
 import com.onsemi.matrix.rtspclient.ResultLogger;
 import com.onsemi.matrix.rtspclient.Info;
+import com.onsemi.matrix.rtspclient.Settings;
 
 import br.com.voicetechnology.rtspclient.RTSPClient;
 import br.com.voicetechnology.rtspclient.concepts.Request;
 import br.com.voicetechnology.rtspclient.concepts.Response;
 
 public class GetParameterCommand extends RTSPCommand {
-    private String parameter = null;
+    private Settings parameter = null;
 
-    public GetParameterCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger, String parameter) {
+    public GetParameterCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger, Settings parameter) {
         super(client, mLogger, rLogger);
 
         this.parameter = parameter;
@@ -42,7 +43,7 @@ public class GetParameterCommand extends RTSPCommand {
     public void execute() {
         super.execute();
 
-        this.client.getParameter(this.parameter);
+        this.client.getParameter(this.parameter.getGetParameterValue());
     }
 
     @Override

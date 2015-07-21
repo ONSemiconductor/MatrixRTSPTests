@@ -66,48 +66,17 @@ public class MainActivity extends AppCompatActivity {
         try {
             this.settings = new Settings(this);
 
-            if (this.messageLogger == null) {
-                this.messageLogger = new MessageLogger((TextView)findViewById(R.id.messageLogsTextView));
-            } else {
-                this.messageLogger.setTextView((TextView)findViewById(R.id.messageLogsTextView));
-            }
+            this.messageLogger = new MessageLogger((TextView)findViewById(R.id.messageLogsTextView));
+            this.resultLogger = new ResultLogger((TextView)findViewById(R.id.resultLogsTextView));
 
-            if (this.resultLogger == null) {
-                this.resultLogger = new ResultLogger((TextView)findViewById(R.id.resultLogsTextView));
-            } else {
-                this.resultLogger.setTextView((TextView)findViewById(R.id.resultLogsTextView));
-            }
+            this.commands = this.createCommands();
 
-           this.createTabHost();
+            this.setupRunAllButton();
+
+            this.setupTabHost();
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-
-        this.commands = this.createCommands();
-
-        Button runAllBtn = (Button)this.findViewById(R.id.runAllBtn);
-
-        runAllBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        new RunAllCommand(Arrays.asList(new RTSPCommand[] {
-                                commands.get(R.id.optionsBtn), commands.get(R.id.describeBtn), commands.get(R.id.setupBtn),
-                                commands.get(R.id.playBtn), commands.get(R.id.pauseBtn), commands.get(R.id.recordBtn),
-                                commands.get(R.id.getParameterBtn), commands.get(R.id.setParameterBtn),
-                                commands.get(R.id.announceBtn), commands.get(R.id.teardownBtn)
-                        })).execute();
-                    }
-                }).start();
-            }
-        });
     }
 
     @Override
@@ -126,7 +95,6 @@ public class MainActivity extends AppCompatActivity {
             return true;
         } else if(id == R.id.action_settings) {
             this.startActivity(new Intent(this, SettingsActivity.class));
-            this.commands = this.createCommands();
             return true;
         }
 
@@ -163,9 +131,9 @@ public class MainActivity extends AppCompatActivity {
         RTSPClient client = new RTSPClient();
         client.setTransport(new PlainTCP());
 
-        cs.put(R.id.describeBtn, new DescribeCommand(client, this.messageLogger, this.resultLogger, this.settings.getCameraURL()));
-        cs.put(R.id.optionsBtn, new OptionsCommand(client, this.messageLogger, this.resultLogger, this.settings.getCameraURL()));
-        cs.put(R.id.setupBtn, new SetupCommand(client, this.messageLogger, this.resultLogger, this.settings.getCameraURL(), 0));
+        cs.put(R.id.describeBtn, new DescribeCommand(client, this.messageLogger, this.resultLogger, this.settings));
+        cs.put(R.id.optionsBtn, new OptionsCommand(client, this.messageLogger, this.resultLogger, this.settings));
+        cs.put(R.id.setupBtn, new SetupCommand(client, this.messageLogger, this.resultLogger, this.settings, 0));
 
         cs.put(R.id.playBtn, new PlayCommand(client, this.messageLogger, this.resultLogger));
         cs.put(R.id.pauseBtn, new PauseCommand(client, this.messageLogger, this.resultLogger));
@@ -175,16 +143,34 @@ public class MainActivity extends AppCompatActivity {
         cs.put(R.id.announceBtn, new AnnounceCommand(client, this.messageLogger, this.resultLogger,
                 this.getString(R.string.announce_command_description)));
 
-        cs.put(R.id.getParameterBtn, new GetParameterCommand(client, this.messageLogger, this.resultLogger,
-                this.settings.getGetParameterValue()));
-
-        cs.put(R.id.setParameterBtn, new SetParameterCommand(client, this.messageLogger, this.resultLogger,
-                this.settings.getSetParameterValue()));
+        cs.put(R.id.getParameterBtn, new GetParameterCommand(client, this.messageLogger, this.resultLogger, this.settings));
+        cs.put(R.id.setParameterBtn, new SetParameterCommand(client, this.messageLogger, this.resultLogger, this.settings));
 
         return cs;
     }
 
-    private void createTabHost() {
+    private void setupRunAllButton() {
+        Button runAllBtn = (Button)this.findViewById(R.id.runAllBtn);
+
+        runAllBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        new RunAllCommand(Arrays.asList(new RTSPCommand[] {
+                                commands.get(R.id.optionsBtn), commands.get(R.id.describeBtn), commands.get(R.id.setupBtn),
+                                commands.get(R.id.playBtn), commands.get(R.id.pauseBtn), commands.get(R.id.recordBtn),
+                                commands.get(R.id.getParameterBtn), commands.get(R.id.setParameterBtn),
+                                commands.get(R.id.announceBtn), commands.get(R.id.teardownBtn)
+                        })).execute();
+                    }
+                }).start();
+            }
+        });
+    }
+
+    private void setupTabHost() {
         TabHost tabHost = (TabHost)findViewById(android.R.id.tabhost);
 
         tabHost.setup();

@@ -70,8 +70,4 @@ public class ResultLogger {
             }
         });
     }
-
-    public void setTextView(TextView textView) {
-        this.textView = textView;
-    }
 }

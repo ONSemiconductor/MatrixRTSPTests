@@ -24,6 +24,7 @@ package com.onsemi.matrix.rtspclient.commands;
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
 import com.onsemi.matrix.rtspclient.ResultLogger;
+import com.onsemi.matrix.rtspclient.Settings;
 
 import java.net.URI;
 
@@ -34,12 +35,12 @@ import br.com.voicetechnology.rtspclient.concepts.Response;
 
 public class DescribeCommand extends RTSPCommand {
     private String descriptor = null;
-    private String uri = null;
+    private Settings settings = null;
 
-    public DescribeCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger, String uri) {
+    public DescribeCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger, Settings settings) {
         super(client, mLogger, rLogger);
 
-        this.uri = uri;
+        this.settings = settings;
     }
 
     @Override
@@ -47,7 +48,7 @@ public class DescribeCommand extends RTSPCommand {
         super.execute();
 
         try {
-            this.client.describe(new URI(this.uri));
+            this.client.describe(new URI(this.settings.getCameraURL()));
         } catch (Exception e) {
             e.printStackTrace();
         }

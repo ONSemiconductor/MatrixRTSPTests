@@ -46,8 +46,4 @@ public class MessageLogger {
             }
         });
     }
-
-    public void setTextView(TextView textView) {
-        this.textView = textView;
-    }
 }
