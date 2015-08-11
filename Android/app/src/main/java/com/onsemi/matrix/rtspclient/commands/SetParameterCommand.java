@@ -22,7 +22,7 @@ package com.onsemi.matrix.rtspclient.commands;
 
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
-import com.onsemi.matrix.rtspclient.ResultLogger;
+import com.onsemi.matrix.rtspclient.TestLogger;
 import com.onsemi.matrix.rtspclient.Settings;
 
 import br.com.voicetechnology.rtspclient.RTSPClient;
@@ -30,8 +30,8 @@ import br.com.voicetechnology.rtspclient.RTSPClient;
 public class SetParameterCommand extends RTSPCommand {
     private Settings settings = null;
 
-    public SetParameterCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger, Settings settings) {
-        super(client, mLogger, rLogger);
+    public SetParameterCommand(RTSPClient client, MessageLogger mLogger, TestLogger tLogger, Settings settings) {
+        super(client, mLogger, tLogger);
 
         this.settings = settings;
     }

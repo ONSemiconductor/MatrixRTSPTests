@@ -52,7 +52,7 @@ import br.com.voicetechnology.rtspclient.transport.PlainTCP;
 
 public class MainActivity extends AppCompatActivity {
     private MessageLogger messageLogger = null;
-    private ResultLogger resultLogger = null;
+    private TestLogger testLogger = null;
 
     private SparseArray<RTSPCommand> commands = null;
 
@@ -67,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             this.settings = new Settings(this);
 
             this.messageLogger = new MessageLogger((TextView)findViewById(R.id.messageLogsTextView));
-            this.resultLogger = new ResultLogger((TextView)findViewById(R.id.resultLogsTextView));
+            this.testLogger = new TestLogger((TextView)findViewById(R.id.resultLogsTextView));
 
             this.commands = this.createCommands();
 
@@ -91,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
 
         if (id == R.id.action_delete) {
             this.messageLogger.clean();
-            this.resultLogger.clean();
+            this.testLogger.clean();
             return true;
         } else if(id == R.id.action_settings) {
             this.startActivity(new Intent(this, SettingsActivity.class));
@@ -131,20 +131,20 @@ public class MainActivity extends AppCompatActivity {
         RTSPClient client = new RTSPClient();
         client.setTransport(new PlainTCP());
 
-        cs.put(R.id.describeBtn, new DescribeCommand(client, this.messageLogger, this.resultLogger, this.settings));
-        cs.put(R.id.optionsBtn, new OptionsCommand(client, this.messageLogger, this.resultLogger, this.settings));
-        cs.put(R.id.setupBtn, new SetupCommand(client, this.messageLogger, this.resultLogger, this.settings, 0));
+        cs.put(R.id.describeBtn, new DescribeCommand(client, this.messageLogger, this.testLogger, this.settings));
+        cs.put(R.id.optionsBtn, new OptionsCommand(client, this.messageLogger, this.testLogger, this.settings));
+        cs.put(R.id.setupBtn, new SetupCommand(client, this.messageLogger, this.testLogger, this.settings, 0));
 
-        cs.put(R.id.playBtn, new PlayCommand(client, this.messageLogger, this.resultLogger));
-        cs.put(R.id.pauseBtn, new PauseCommand(client, this.messageLogger, this.resultLogger));
-        cs.put(R.id.recordBtn, new RecordCommand(client, this.messageLogger, this.resultLogger));
-        cs.put(R.id.teardownBtn, new TeardownCommand(client, this.messageLogger, this.resultLogger));
+        cs.put(R.id.playBtn, new PlayCommand(client, this.messageLogger, this.testLogger));
+        cs.put(R.id.pauseBtn, new PauseCommand(client, this.messageLogger, this.testLogger));
+        cs.put(R.id.recordBtn, new RecordCommand(client, this.messageLogger, this.testLogger));
+        cs.put(R.id.teardownBtn, new TeardownCommand(client, this.messageLogger, this.testLogger));
 
-        cs.put(R.id.announceBtn, new AnnounceCommand(client, this.messageLogger, this.resultLogger,
+        cs.put(R.id.announceBtn, new AnnounceCommand(client, this.messageLogger, this.testLogger,
                 this.getString(R.string.announce_command_description)));
 
-        cs.put(R.id.getParameterBtn, new GetParameterCommand(client, this.messageLogger, this.resultLogger, this.settings));
-        cs.put(R.id.setParameterBtn, new SetParameterCommand(client, this.messageLogger, this.resultLogger, this.settings));
+        cs.put(R.id.getParameterBtn, new GetParameterCommand(client, this.messageLogger, this.testLogger, this.settings));
+        cs.put(R.id.setParameterBtn, new SetParameterCommand(client, this.messageLogger, this.testLogger, this.settings));
 
         return cs;
     }

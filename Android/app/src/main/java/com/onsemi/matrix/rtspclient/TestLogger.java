@@ -25,37 +25,37 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class ResultLogger {
+public class TestLogger {
     private TextView textView;
 
-    private ArrayList<Info> result = new ArrayList<Info>();
+    private ArrayList<TestResult> result = new ArrayList<TestResult>();
 
-    public ResultLogger(TextView textView) {
+    public TestLogger(TextView textView) {
         this.textView = textView;
     }
 
-    public void info(Info info) {
-        result.add(info);
+    public void printTestResult(TestResult result) {
+        this.result.add(result);
 
         this.textView.post(new Runnable() {
             @Override
             public void run() {
                 String message = new String();
 
-                for(int i = 0; i < ResultLogger.this.result.size(); i++) {
-                    String result = ResultLogger.this.result.get(i).isPassed() ? "passed" : "failed";
-                    String resultColor = ResultLogger.this.result.get(i).isPassed() ? "#00ff00" : "#ff0000";
+                for(int i = 0; i < TestLogger.this.result.size(); i++) {
+                    String result = TestLogger.this.result.get(i).isPassed() ? "passed" : "failed";
+                    String resultColor = TestLogger.this.result.get(i).isPassed() ? "#00ff00" : "#ff0000";
 
                     message += String.format("Command: <font color='#999999'>%s</font> Result: <font color='%s'>%s</font><br/>",
-                            ResultLogger.this.result.get(i).getMethodName(), resultColor, result);
+                            TestLogger.this.result.get(i).getMethodName(), resultColor, result);
 
-                    if(ResultLogger.this.result.get(i).getError() != null) {
+                    if(TestLogger.this.result.get(i).getError() != null) {
                         message += String.format("> Error: <font color='#777777'>%s</font><br/>",
-                                ResultLogger.this.result.get(i).getError());
+                                TestLogger.this.result.get(i).getError());
                     }
                 }
 
-                ResultLogger.this.textView.setText(Html.fromHtml(message));
+                TestLogger.this.textView.setText(Html.fromHtml(message));
             }
         });
     }
@@ -66,7 +66,7 @@ public class ResultLogger {
         this.textView.post(new Runnable() {
             @Override
             public void run() {
-                ResultLogger.this.textView.setText("");
+                TestLogger.this.textView.setText("");
             }
         });
     }
