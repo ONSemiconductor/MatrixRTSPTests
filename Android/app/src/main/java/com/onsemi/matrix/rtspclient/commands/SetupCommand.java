@@ -20,10 +20,10 @@
 
 package com.onsemi.matrix.rtspclient.commands;
 
-import com.onsemi.matrix.rtspclient.Info;
+import com.onsemi.matrix.rtspclient.TestResult;
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
-import com.onsemi.matrix.rtspclient.ResultLogger;
+import com.onsemi.matrix.rtspclient.TestLogger;
 import com.onsemi.matrix.rtspclient.Settings;
 
 import java.net.URI;
@@ -38,8 +38,8 @@ public class SetupCommand extends RTSPCommand {
     private int port;
     private Settings settings;
 
-    public SetupCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger, Settings settings, int port) {
-        super(client, mLogger, rLogger);
+    public SetupCommand(RTSPClient client, MessageLogger mLogger, TestLogger tLogger, Settings settings, int port) {
+        super(client, mLogger, tLogger);
 
         this.settings = settings;
         this.port = port;
@@ -57,11 +57,11 @@ public class SetupCommand extends RTSPCommand {
     }
 
     @Override
-    public Info verify(Request request, Response response) {
-        Info info = super.verify(request, response);
+    public TestResult verify(Request request, Response response) {
+        TestResult testResult = super.verify(request, response);
 
-        if (!info.isPassed()) {
-            return info;
+        if (!testResult.isPassed()) {
+            return testResult;
         }
 
         String methodName = request.getMethod().toString();
@@ -80,17 +80,17 @@ public class SetupCommand extends RTSPCommand {
             }
 
             if (clientPort == null) {
-                return new Info(methodName, false, "'Transport' header doesn't contain 'client_port' property");
+                return new TestResult(methodName, false, "'Transport' header doesn't contain 'client_port' property");
             }
 
             if (clientPort.compareTo(String.format("client_port=%d-%d", port, port + 1)) != 0) {
-                return new Info(methodName, false, String.format("Expected: 'client_port=%d-%d' Actual: '%s'", port, port + 1, clientPort));
+                return new TestResult(methodName, false, String.format("Expected: 'client_port=%d-%d' Actual: '%s'", port, port + 1, clientPort));
             }
         } catch (MissingHeaderException e) {
-            return new Info(methodName, false, "Response doesn't contain 'Transport' header");
+            return new TestResult(methodName, false, "Response doesn't contain 'Transport' header");
         }
 
 
-        return new Info(methodName, true);
+        return new TestResult(methodName, true);
     }
 }

@@ -20,10 +20,10 @@
 
 package com.onsemi.matrix.rtspclient.commands;
 
-import com.onsemi.matrix.rtspclient.Info;
+import com.onsemi.matrix.rtspclient.TestResult;
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
-import com.onsemi.matrix.rtspclient.ResultLogger;
+import com.onsemi.matrix.rtspclient.TestLogger;
 import com.onsemi.matrix.rtspclient.Settings;
 
 import java.net.URI;
@@ -37,8 +37,8 @@ import br.com.voicetechnology.rtspclient.concepts.Response;
 public class OptionsCommand extends RTSPCommand {
     private Settings settings = null;
 
-    public OptionsCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger, Settings settings) {
-        super(client, mLogger, rLogger);
+    public OptionsCommand(RTSPClient client, MessageLogger mLogger, TestLogger tLogger, Settings settings) {
+        super(client, mLogger, tLogger);
 
         this.settings = settings;
     }
@@ -55,11 +55,11 @@ public class OptionsCommand extends RTSPCommand {
     }
 
     @Override
-    public Info verify(Request request, Response response) {
-        Info info = super.verify(request, response);
+    public TestResult verify(Request request, Response response) {
+        TestResult testResult = super.verify(request, response);
 
-        if (!info.isPassed()) {
-            return info;
+        if (!testResult.isPassed()) {
+            return testResult;
         }
 
         String methodName = request.getMethod().toString();
@@ -70,15 +70,15 @@ public class OptionsCommand extends RTSPCommand {
 
             for (Request.Method method : Request.Method.values()) {
                 if(!publicHeaderValue.contains(method.toString())) {
-                    return new Info(methodName, false, String.format(
+                    return new TestResult(methodName, false, String.format(
                             "'Public' header doesn't contain %s command", method));
                 }
             }
         } catch (MissingHeaderException e) {
-            return new Info(methodName, false, "Response doesn't contain 'Public' header");
+            return new TestResult(methodName, false, "Response doesn't contain 'Public' header");
         }
 
 
-        return new Info(methodName, true);
+        return new TestResult(methodName, true);
     }
 }

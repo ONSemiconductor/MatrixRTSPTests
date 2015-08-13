@@ -20,6 +20,8 @@
 
 package com.onsemi.matrix.rtspclient;
 
+import java.net.ConnectException;
+import java.net.SocketTimeoutException;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -35,15 +37,15 @@ public class RTSPCommand extends Observable implements ClientListener {
     protected RTSPClient client = null;
 
     protected MessageLogger messageLogger = null;
-    protected ResultLogger resultLogger = null;
+    protected TestLogger testLogger = null;
 
     protected Observer requestFinishedObserver = null;
 
-    public RTSPCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger) {
+    public RTSPCommand(RTSPClient client, MessageLogger mLogger, TestLogger tLogger) {
         this.client = client;
 
         this.messageLogger = mLogger;
-        this.resultLogger = rLogger;
+        this.testLogger = tLogger;
     }
 
     public void execute() {
@@ -60,7 +62,7 @@ public class RTSPCommand extends Observable implements ClientListener {
 
     protected void notifyRequestFinishedObserver() {
         if (this.requestFinishedObserver != null) {
-            requestFinishedObserver.update(this, null);
+            this.requestFinishedObserver.update(this, null);
         }
     }
 
@@ -69,39 +71,44 @@ public class RTSPCommand extends Observable implements ClientListener {
 
     @Override
     public void generalError(Client client, Throwable error) {
+        if(error.getClass() == ConnectException.class ||
+                error.getClass() == SocketTimeoutException.class) {
+            this.messageLogger.printErrorMessage(error.getMessage());
+        }
+
         error.printStackTrace();
     }
 
     @Override
     public void requestFailed(Client client, Request request, Throwable cause) {
-        this.messageLogger.info(String.format("Error:\n%s", cause));
+        this.messageLogger.printRTSPMessage(String.format("Error:\n%s", cause));
     }
 
     @Override
     public void response(Client client, Request request, Response response) {
         this.print(request, response);
 
-        this.resultLogger.info(this.verify(request, response));
+        this.testLogger.printTestResult(this.verify(request, response));
 
         this.notifyRequestFinishedObserver();
     }
 
-    public Info verify(Request request, Response response) {
+    public TestResult verify(Request request, Response response) {
         if (response.getStatusCode() == 200) {
-            return new Info(request.getMethod().toString(), true);
+            return new TestResult(request.getMethod().toString(), true);
         }
 
-        return new Info(request.getMethod().toString(), false,
+        return new TestResult(request.getMethod().toString(), false,
                 String.format("Expected status: '%d OK' Actual status: '%d %s'",
                         200, response.getStatusCode(), response.getStatusText()));
     }
 
     protected void print(Request request, Response response) {
-        this.messageLogger.info(String.format("Request:\n%s", request));
+        this.messageLogger.printRTSPMessage(String.format("Request:\n%s", request));
 
         print(request.getEntityMessage());
 
-        this.messageLogger.info(String.format("Response:\n%s", response));
+        this.messageLogger.printRTSPMessage(String.format("Response:\n%s", response));
 
         print(response.getEntityMessage());
     }
@@ -110,7 +117,7 @@ public class RTSPCommand extends Observable implements ClientListener {
         if (entityMessage != null) {
             Content content = entityMessage.getContent();
 
-            this.messageLogger.info(String.format("%s\n\n", new String(content.getBytes())));
+            this.messageLogger.printRTSPMessage(String.format("%s\n\n", new String(content.getBytes())));
         }
     }
 }

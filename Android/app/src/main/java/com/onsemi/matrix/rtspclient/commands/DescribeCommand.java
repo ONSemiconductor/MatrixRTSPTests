@@ -23,7 +23,7 @@ package com.onsemi.matrix.rtspclient.commands;
 
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
-import com.onsemi.matrix.rtspclient.ResultLogger;
+import com.onsemi.matrix.rtspclient.TestLogger;
 import com.onsemi.matrix.rtspclient.Settings;
 
 import java.net.URI;
@@ -37,8 +37,8 @@ public class DescribeCommand extends RTSPCommand {
     private String descriptor = null;
     private Settings settings = null;
 
-    public DescribeCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger, Settings settings) {
-        super(client, mLogger, rLogger);
+    public DescribeCommand(RTSPClient client, MessageLogger mLogger, TestLogger tLogger, Settings settings) {
+        super(client, mLogger, tLogger);
 
         this.settings = settings;
     }
@@ -61,15 +61,15 @@ public class DescribeCommand extends RTSPCommand {
 
     @Override
     public void response(Client client, Request request, Response response) {
-        this.messageLogger.info(String.format("Request:\n%s", request));
+        this.messageLogger.printRTSPMessage(String.format("Request:\n%s", request));
 
-        this.messageLogger.info(String.format("Response:\n%s", response));
+        this.messageLogger.printRTSPMessage(String.format("Response:\n%s", response));
 
         if (this.descriptor != null) {
-            this.messageLogger.info(String.format("%s\n", this.descriptor));
+            this.messageLogger.printRTSPMessage(String.format("%s\n", this.descriptor));
         }
 
-        this.resultLogger.info(this.verify(request, response));
+        this.testLogger.printTestResult(this.verify(request, response));
 
         this.notifyRequestFinishedObserver();
     }

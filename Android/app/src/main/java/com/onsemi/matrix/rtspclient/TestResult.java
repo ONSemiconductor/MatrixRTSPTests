@@ -20,18 +20,18 @@
 
 package com.onsemi.matrix.rtspclient;
 
-public class Info {
+public class TestResult {
     private String methodName = null;
     private String error = null;
 
     private boolean isPassed = false;
 
-    public Info(String methodName, boolean isPassed) {
+    public TestResult(String methodName, boolean isPassed) {
         this.methodName = methodName;
         this.isPassed = isPassed;
     }
 
-    public Info(String name, boolean isPassed, String error) {
+    public TestResult(String name, boolean isPassed, String error) {
         this(name, isPassed);
 
         this.error = error;

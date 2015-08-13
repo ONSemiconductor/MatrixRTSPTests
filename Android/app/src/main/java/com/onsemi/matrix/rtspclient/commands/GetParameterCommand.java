@@ -22,8 +22,8 @@ package com.onsemi.matrix.rtspclient.commands;
 
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
-import com.onsemi.matrix.rtspclient.ResultLogger;
-import com.onsemi.matrix.rtspclient.Info;
+import com.onsemi.matrix.rtspclient.TestLogger;
+import com.onsemi.matrix.rtspclient.TestResult;
 import com.onsemi.matrix.rtspclient.Settings;
 
 import br.com.voicetechnology.rtspclient.RTSPClient;
@@ -33,8 +33,8 @@ import br.com.voicetechnology.rtspclient.concepts.Response;
 public class GetParameterCommand extends RTSPCommand {
     private Settings parameter = null;
 
-    public GetParameterCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger, Settings parameter) {
-        super(client, mLogger, rLogger);
+    public GetParameterCommand(RTSPClient client, MessageLogger mLogger, TestLogger tLogger, Settings parameter) {
+        super(client, mLogger, tLogger);
 
         this.parameter = parameter;
     }
@@ -47,21 +47,21 @@ public class GetParameterCommand extends RTSPCommand {
     }
 
     @Override
-    public Info verify(Request request, Response response) {
-        Info info = super.verify(request, response);
+    public TestResult verify(Request request, Response response) {
+        TestResult testResult = super.verify(request, response);
 
-        if (!info.isPassed()) {
-            return info;
+        if (!testResult.isPassed()) {
+            return testResult;
         }
 
         String methodName = request.getMethod().toString();
 
         if (response.getEntityMessage() == null) {
-            return new Info(methodName, false,
+            return new TestResult(methodName, false,
                     String.format("%s command doesn't return requested parameter", methodName));
 
         }
 
-        return new Info(methodName, true);
+        return new TestResult(methodName, true);
     }
 }
