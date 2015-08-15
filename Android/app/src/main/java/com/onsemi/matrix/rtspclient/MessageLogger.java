@@ -21,6 +21,7 @@
 package com.onsemi.matrix.rtspclient;
 
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MessageLogger {
     private TextView textView;
@@ -29,11 +30,20 @@ public class MessageLogger {
         this.textView = textView;
     }
 
-    public void info(final String message) {
+    public void printRTSPMessage(final String message) {
         textView.post(new Runnable() {
             @Override
             public void run() {
                 textView.setText(textView.getText() + message);
+            }
+        });
+    }
+
+    public void printErrorMessage(final String message){
+        textView.post(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(textView.getContext(), message, Toast.LENGTH_LONG).show();
             }
         });
     }

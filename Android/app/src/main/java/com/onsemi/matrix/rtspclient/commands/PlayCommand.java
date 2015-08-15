@@ -22,14 +22,14 @@ package com.onsemi.matrix.rtspclient.commands;
 
 import com.onsemi.matrix.rtspclient.MessageLogger;
 import com.onsemi.matrix.rtspclient.RTSPCommand;
-import com.onsemi.matrix.rtspclient.ResultLogger;
+import com.onsemi.matrix.rtspclient.TestLogger;
 
 
 import br.com.voicetechnology.rtspclient.RTSPClient;
 
 public class PlayCommand extends RTSPCommand {
-    public PlayCommand(RTSPClient client, MessageLogger mLogger, ResultLogger rLogger) {
-        super(client, mLogger, rLogger);
+    public PlayCommand(RTSPClient client, MessageLogger mLogger, TestLogger tLogger) {
+        super(client, mLogger, tLogger);
     }
 
     @Override

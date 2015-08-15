@@ -20,6 +20,7 @@
 package br.com.voicetechnology.rtspclient.transport;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.URI;
 
@@ -96,7 +97,8 @@ public class PlainTCP implements Transport
 			throw new IllegalStateException("Socket is still open. Close it first");
 		int port = to.getPort();
 		if(port == -1) port = 554;
-		socket = new Socket(to.getHost(), port);
+		socket = new Socket();
+        socket.connect(new InetSocketAddress(to.getHost(), port), 5000);
 		setConnected(true);
 		thread = new TransportThread(this, transportListener);
 		thread.start();
